@@ -1,0 +1,65 @@
+/* =============================================
+   APP - ESTILOS ESPECÍFICOS
+   ============================================= */
+
+/* ===== FUNDO GERAL ===== */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333333;
+    margin: 0;
+    min-height: 100vh;
+}
+
+/* ===== CONTEÚDO PRINCIPAL (APENAS IMAGEM) ===== */
+.app-content {
+    width: 100%;
+    padding: 4rem 6% 6rem 6%;
+    background: linear-gradient(180deg, #C8E6C9 0%, #E0F2F1 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 70vh;
+}
+
+.app-image-container {
+    max-width: 500px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.app-image-container img {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: contain;
+    
+    /* Efeito de "flutuação" com sombra */
+    border-radius: 24px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.app-image-container img:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.2);
+}
+
+/* ===== RESPONSIVIDADE ===== */
+@media (max-width: 900px) {
+    .app-content {
+        min-height: 50vh;
+        padding: 3rem 6%;
+    }
+
+    .app-image-container {
+        max-width: 350px;
+    }
+}
+
+@media (max-width: 600px) {
+    .app-image-container {
+        max-width: 280px;
+    }
+}
