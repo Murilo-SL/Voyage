@@ -35,12 +35,11 @@ body {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    /* Logo na esquerda, menu na direita */
     position: static;
     top: 0;
     z-index: 50;
-    /* Degradê super suave de verde para verde (cima -> baixo) */
     background: linear-gradient(180deg, #C8E6C9 0%, #E0F2F1 100%);
+    gap: 1rem;
 }
 
 .header .logo {
@@ -63,12 +62,7 @@ body {
 .brand-name {
     font-size: 28px;
     font-weight: 700;
-
-    background: linear-gradient(90deg,
-            #00c6ff,
-            #0072ff,
-            #7b2cff);
-
+    background: linear-gradient(90deg, #00c6ff, #0072ff, #7b2cff);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -79,7 +73,6 @@ body {
     display: flex;
     list-style: none;
     gap: 2.5rem;
-    /* Espaçamento entre os itens do menu */
     align-items: center;
 }
 
@@ -124,21 +117,14 @@ body {
     font-size: 0.95rem;
     color: #ffffff;
     margin-left: 2rem;
-
-
     position: relative;
     overflow: hidden;
     z-index: 1;
-
-
     background: linear-gradient(135deg, #0F2C59 0%, #00C9A7 100%);
     box-shadow: 0 4px 15px rgba(0, 201, 167, 0.3);
-
-
     transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
         box-shadow 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
-
 
 .btn-install::before {
     content: '';
@@ -148,16 +134,9 @@ body {
     width: 100%;
     height: 100%;
     border-radius: 50px;
-
-
     background: linear-gradient(135deg, #00C9A7 0%, #0F2C59 100%);
-
-
     opacity: 0;
     z-index: -1;
-    /* Fica atrás do texto */
-
-
     transition: opacity 0.5s ease-in-out;
 }
 
@@ -165,16 +144,13 @@ body {
     font-size: 1.2rem;
     transition: transform 0.3s ease;
     position: relative;
-    /* Garante que o ícone fique acima do degradê */
     z-index: 2;
 }
 
 .btn-install span {
     position: relative;
-    /* Garante que o texto fique acima do degradê */
     z-index: 2;
 }
-
 
 .btn-install:hover {
     transform: translateY(-4px) scale(1.03);
@@ -183,70 +159,19 @@ body {
 
 .btn-install:hover::before {
     opacity: 1;
-    /* O segundo degradê aparece suavemente por cima do primeiro */
 }
 
 .btn-install:hover i {
     transform: translateY(-2px) scale(1.1);
 }
 
-/* Efeito ao clicar */
 .btn-install:active {
     transform: scale(0.95);
     box-shadow: 0 2px 8px rgba(0, 201, 167, 0.3);
     transition: all 0.1s ease;
 }
 
-/* ===== RESPONSIVIDADE ===== */
-@media (max-width: 768px) {
-    .btn-install {
-        margin-left: 0;
-        width: 100%;
-        justify-content: center;
-    }
-}
-
-/* ===== RESPONSIVIDADE (Ajuste para celular) ===== */
-@media (max-width: 768px) {
-    .header {
-        height: auto;
-        flex-direction: column;
-        padding: 1.5rem 6%;
-        gap: 1.2rem;
-    }
-
-    .nav-menu ul {
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 0.8rem;
-    }
-
-    .btn-install {
-        margin-left: 0;
-        /* Remove margem lateral no celular */
-        width: 100%;
-        /* Botão ocupa a largura toda no mobile */
-        justify-content: center;
-    }
-}
-
-/* ===== RESPONSIVIDADE  ===== */
-@media (max-width: 768px) {
-    .header {
-        height: auto;
-        flex-direction: column;
-        padding: 1.5rem 6%;
-        gap: 1.5rem;
-    }
-
-    .nav-menu ul {
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 1rem;
-    }
-}
-
-/* ===== MAIN / CARROSSEL DE CARDS (Layout Lado a Lado) ===== */
+/* ===== MAIN / CARROSSEL DE CARDS ===== */
 .main-content {
     position: relative;
     width: 100%;
@@ -263,7 +188,6 @@ body {
     position: relative;
     width: 100%;
     max-width: 1100px;
-    /* Aumentei para caber texto e imagem */
     height: 25rem;
 }
 
@@ -276,19 +200,16 @@ body {
     height: 100%;
     background: #ffffff;
     padding: 0;
-    /* Removemos o padding antigo, ele será feito nas colunas */
     border-radius: 24px;
     box-shadow: 0 20px 50px rgba(0, 0, 0, 0.08);
     display: flex;
     flex-direction: row;
-    /* Texto na esquerda, imagem na direita */
     align-items: center;
     opacity: 0;
     transform: scale(0.95) translateY(20px);
     transition: opacity 0.6s ease, transform 0.6s ease;
     pointer-events: none;
     overflow: hidden;
-    /* Garante que a imagem não saia das bordas arredondadas */
 }
 
 /* Card Ativo */
@@ -303,15 +224,15 @@ body {
 /* Coluna do Texto (Esquerda) */
 .card-text {
     flex: 1;
-    padding: 3rem 2rem 3rem 4rem;
-    /* Mais padding na esquerda */
+    padding: clamp(1.5rem, 3vw, 3rem)
+             clamp(1.2rem, 2.5vw, 2rem)
+             clamp(1.5rem, 3vw, 3rem)
+             clamp(2rem, 4vw, 4rem);
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: flex-start;
-    /* Texto alinhado à esquerda */
     text-align: left;
-    /* Mudou de centralizado para esquerda */
     width: 55%;
 }
 
@@ -324,16 +245,13 @@ body {
     justify-content: center;
     overflow: hidden;
     border-radius: 0 24px 24px 0;
-    /* Arredondada apenas na direita */
     background: #f0faf9;
-    /* Fundo verde bem clarinho atrás da imagem */
 }
 
 .card-image img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    /* A imagem vai preencher o espaço sem distorcer */
     display: block;
 }
 
@@ -352,7 +270,7 @@ body {
 }
 
 .card h1 {
-    font-size: 2.2rem;
+    font-size: clamp(1.4rem, 3.5vw, 2.2rem);
     font-weight: 700;
     color: #333333;
     margin-bottom: 0.8rem;
@@ -360,10 +278,9 @@ body {
 }
 
 .card p {
-    font-size: 1.05rem;
+    font-size: clamp(0.95rem, 1.8vw, 1.05rem);
     color: #666;
     max-width: 500px;
-    /* Limita largura do texto */
     margin-bottom: 1.5rem;
     line-height: 1.6;
 }
@@ -436,7 +353,7 @@ body {
     transform: scale(1.2);
 }
 
-/* ===== SETAS DE NAVEGAÇÃO PERSONALIZADAS ===== */
+/* ===== SETAS DE NAVEGAÇÃO ===== */
 .arrow {
     position: absolute;
     top: 50%;
@@ -450,46 +367,25 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-
-    /* Degradê da logo */
     background: linear-gradient(135deg, #00C9A7 0%, #0F2C59 100%);
     color: #ffffff;
-
-    /* Sombras elegantes */
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
-
-    /* Transição suave */
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Efeito ao passar o mouse */
 .arrow:hover {
     transform: translateY(-50%) scale(1.1);
     box-shadow: 0 8px 25px rgba(0, 201, 167, 0.4);
 }
 
-/* Efeito ao clicar */
 .arrow:active {
     transform: translateY(-50%) scale(0.9);
 }
 
-/* Posicionamento: Colado nas bordas do card */
-.cards-slider {
-    position: relative;
-    /* Garante que as setas fiquem presas ao slider */
-}
+/* Posicionamento: sempre colado nas bordas do card (max-width: 1100px) */
+.arrow-left  { left:  max(0.5rem, calc(50% - 588px)); }
+.arrow-right { right: max(0.5rem, calc(50% - 588px)); }
 
-.arrow-left {
-    left: 100px;
-    /* Metade da largura da seta para fora */
-}
-
-.arrow-right {
-    right: 100px;
-    /* Metade da largura da seta para fora */
-}
-
-/* Ícone SVG dentro da seta */
 .arrow svg {
     width: 24px;
     height: 24px;
@@ -502,80 +398,26 @@ body {
     transform: scale(1.1);
 }
 
-/* ===== RESPONSIVIDADE ===== */
-@media (max-width: 900px) {
-    .arrow {
-        display: none;
-        /* Esconde em telas menores */
-    }
-}
-
-
-/* ===== RESPONSIVIDADE ===== */
-@media (max-width: 900px) {
-    .card {
-        flex-direction: column;
-        /* Em telas menores, imagem vai para baixo do texto */
-        height: auto;
-        padding-bottom: 0;
-    }
-
-    .card-text {
-        width: 100%;
-        padding: 2.5rem;
-        align-items: center;
-        text-align: center;
-    }
-
-    .card p {
-        max-width: 100%;
-    }
-
-    .card-image {
-        width: 100%;
-        height: 250px;
-        border-radius: 0 0 24px 24px;
-    }
-
-    .main-content {
-        margin: -2rem 0 2rem 0;
-    }
-
-    .cards-slider {
-        height: auto;
-        min-height: 32rem;
-    }
-
-    .arrow {
-        display: none;
-    }
-}
-
-
 /* ===== SEÇÃO REGIÕES ===== */
 .regions-section {
     width: 100%;
     padding: 5rem 6% 6rem 6%;
-    
-    /* 🔥 DEGRADÊ MAIS MARCADO (Verde clarinho -> Azul escuro suave) */
     background: linear-gradient(180deg, #E0F2F1 0%, #C8E6C9 40%, #A3C4BC 100%);
-    
     margin-top: 2rem;
 }
 
 .regions-container {
-    max-width: 800px; /* Deixei mais estreito para ficar elegante */
+    max-width: 800px;
     margin: 0 auto;
     display: flex;
-    flex-direction: column; /* 🔥 O SEGREDO: Coloca um embaixo do outro */
+    flex-direction: column;
     align-items: center;
     gap: 3rem;
 }
 
-/* Coluna do Texto (Centralizado) */
 .regions-text {
     max-width: 700px;
-    text-align: center; /* Centraliza o texto */
+    text-align: center;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -595,14 +437,13 @@ body {
 }
 
 .regions-text h2 {
-    font-size: 3rem;
+    font-size: clamp(1.6rem, 4.5vw, 3rem);
     font-weight: 700;
     color: #333333;
     line-height: 1.2;
     margin-bottom: 1.2rem;
 }
 
-/* A palavra que muda (Matão / Taquaritinga) */
 .highlight-city {
     background: linear-gradient(135deg, #00C9A7 0%, #0F2C59 100%);
     -webkit-background-clip: text;
@@ -614,7 +455,7 @@ body {
 }
 
 .regions-text p {
-    font-size: 1.1rem;
+    font-size: clamp(0.95rem, 1.8vw, 1.1rem);
     color: #666;
     line-height: 1.6;
     margin-bottom: 2rem;
@@ -632,7 +473,6 @@ body {
     font-weight: 700;
     font-size: 1rem;
     color: #ffffff;
-    
     background: linear-gradient(135deg, #00C9A7 0%, #0F2C59 100%);
     box-shadow: 0 4px 15px rgba(0, 201, 167, 0.3);
     transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
@@ -677,12 +517,13 @@ body {
     transform: scale(0.95);
 }
 
-/* Coluna da Imagem (Agora embaixo) */
+/* Coluna da Imagem */
 .regions-images {
     width: 100%;
     max-width: 700px;
     position: relative;
-    height: 350px;
+    aspect-ratio: 2 / 1;
+    height: auto;
     border-radius: 24px;
     overflow: hidden;
     box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
@@ -707,12 +548,7 @@ body {
     z-index: 10;
 }
 
-
 /* ===== CRÉDITOS DINÂMICOS DAS IMAGENS ===== */
-.regions-images {
-    position: relative;
-}
-
 .credit-text {
     position: absolute;
     bottom: 10px;
@@ -739,7 +575,6 @@ body {
     color: #0F2C59;
 }
 
-/* Ajuste para o modo noturno */
 body.dark-mode .credit-text {
     background: rgba(15, 31, 38, 0.8);
     color: #e0e0e0;
@@ -753,16 +588,6 @@ body.dark-mode .credit-text a:hover {
     color: #ffffff;
 }
 
-/* ===== RESPONSIVIDADE ===== */
-@media (max-width: 900px) {
-    .regions-text h2 {
-        font-size: 2.2rem;
-    }
-    .regions-images {
-        height: 250px;
-    }
-}
-
 /* ===== SEÇÃO VISÃO ===== */
 .vision-section {
     width: 100%;
@@ -772,7 +597,7 @@ body.dark-mode .credit-text a:hover {
 }
 
 .vision-section .vision-text p {
-    color: #444444; /* Mantém cinza escuro na parte clara */
+    color: #444444;
 }
 
 @media (min-width: 901px) {
@@ -791,7 +616,6 @@ body.dark-mode .credit-text a:hover {
     gap: 4rem;
 }
 
-/* Coluna do Texto */
 .vision-text {
     flex: 1;
     max-width: 600px;
@@ -812,7 +636,7 @@ body.dark-mode .credit-text a:hover {
 }
 
 .vision-text h2 {
-    font-size: 3rem;
+    font-size: clamp(1.6rem, 4.5vw, 3rem);
     font-weight: 700;
     color: #ffffff;
     line-height: 1.2;
@@ -828,34 +652,31 @@ body.dark-mode .credit-text a:hover {
 }
 
 .vision-text p {
-    font-size: 1.1rem;
+    font-size: clamp(0.95rem, 1.8vw, 1.1rem);
     line-height: 1.8;
     margin-bottom: 1.5rem;
 }
 
-/* Ajuste dinâmico da cor do texto conforme o degradê */
 .vision-text p:nth-child(3) {
-    color: #ffffff; /* Parágrafos ficam brancos no fundo azul */
+    color: #ffffff;
 }
 
 .vision-text p:nth-child(4) {
-    color: #f0f0f0; /* Parágrafos ficam brancos no fundo azul */
+    color: #f0f0f0;
 }
 
 .vision-text .vision-highlight {
     font-weight: 600;
     color: #ffffff;
-    font-size: 1.15rem;
+    font-size: clamp(1rem, 2vw, 1.15rem);
     border-left: 4px solid #00C9A7;
-    padding-left: 1.2rem;
+    padding: 1rem 1.5rem;
     margin-top: 0.5rem;
     background: rgba(0, 0, 0, 0.1);
     border-radius: 8px;
-    padding: 1rem 1.5rem;
     backdrop-filter: blur(2px);
 }
 
-/* Coluna da Imagem */
 .vision-image {
     flex: 1;
     max-width: 550px;
@@ -872,38 +693,11 @@ body.dark-mode .credit-text a:hover {
     object-fit: cover;
 }
 
-/* ===== RESPONSIVIDADE ===== */
-@media (max-width: 900px) {
-    .vision-container {
-        flex-direction: column-reverse;
-        gap: 2.5rem;
-    }
-    .vision-text {
-        max-width: 100%;
-        text-align: center;
-    }
-    .vision-text h2 {
-        font-size: 2.2rem;
-    }
-    .vision-text .vision-highlight {
-        border-left: none;
-        padding-left: 0;
-        text-align: center;
-    }
-    .vision-image {
-        max-width: 100%;
-    }
-}
-
 /* ===== SEÇÃO BLOG ===== */
 .blog-section {
     width: 100%;
     padding: 6rem 6% 8rem 6%;
-    
-    /* 🔥 Degradê de continuação (Azul escuro -> Azul mais profundo) */
     background: linear-gradient(180deg, #0F2C59 0%, #0a1f3d 100%);
-    
-    /* Centraliza o conteúdo e limita a largura */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -937,7 +731,7 @@ body.dark-mode .credit-text a:hover {
 }
 
 .blog-content h2 {
-    font-size: 3.5rem;
+    font-size: clamp(1.7rem, 5vw, 3.5rem);
     font-weight: 700;
     color: #ffffff;
     line-height: 1.1;
@@ -956,7 +750,7 @@ body.dark-mode .credit-text a:hover {
 }
 
 .blog-content p {
-    font-size: 1.2rem;
+    font-size: clamp(1rem, 2vw, 1.2rem);
     color: rgba(255, 255, 255, 0.8);
     line-height: 1.8;
     max-width: 600px;
@@ -974,15 +768,12 @@ body.dark-mode .credit-text a:hover {
     font-weight: 700;
     font-size: 1.1rem;
     color: #0F2C59;
-    
-    /* Fundo branco com degradê nas bordas */
     background: #ffffff;
     border: 2px solid transparent;
-    background-image: linear-gradient(#ffffff, #ffffff), 
+    background-image: linear-gradient(#ffffff, #ffffff),
                       linear-gradient(135deg, #00C9A7, #0F2C59);
     background-origin: border-box;
     background-clip: padding-box, border-box;
-    
     box-shadow: 0 4px 20px rgba(0, 201, 167, 0.3);
     transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     position: relative;
@@ -1027,30 +818,13 @@ body.dark-mode .credit-text a:hover {
     transform: scale(0.95);
 }
 
-/* ===== RESPONSIVIDADE ===== */
-@media (max-width: 900px) {
-    .blog-section {
-        padding: 4rem 6% 5rem 6%;
-    }
-    .blog-content h2 {
-        font-size: 2.5rem;
-    }
-    .blog-content p {
-        font-size: 1.05rem;
-    }
-    .btn-blog {
-        padding: 0.9rem 2.5rem;
-        font-size: 1rem;
-    }
-}
-
 /* ===== RODAPÉ ===== */
 .footer {
     width: 100%;
-    background: #08152a; /* Azul mais escuro que a seção do blog */
+    background: #08152a;
     padding: 4rem 6% 2rem 6%;
     color: #ffffff;
-    border-top: 2px solid rgba(0, 201, 167, 0.15); /* Linha sutil verde água */
+    border-top: 2px solid rgba(0, 201, 167, 0.15);
 }
 
 .footer-container {
@@ -1064,7 +838,6 @@ body.dark-mode .credit-text a:hover {
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-/* Colunas do Footer */
 .footer-col {
     flex: 1;
     min-width: 180px;
@@ -1079,7 +852,6 @@ body.dark-mode .credit-text a:hover {
     display: inline-block;
 }
 
-/* Linha decorativa abaixo do título */
 .footer-col h3::after {
     content: '';
     position: absolute;
@@ -1111,7 +883,6 @@ body.dark-mode .credit-text a:hover {
     transform: translateX(4px);
 }
 
-/* Coluna de Contato (Email e Redes) */
 .footer-email {
     display: inline-flex;
     align-items: center;
@@ -1131,7 +902,6 @@ body.dark-mode .credit-text a:hover {
     font-size: 1.1rem;
 }
 
-/* Ícones das Redes Sociais */
 .footer-social {
     display: flex;
     gap: 0.8rem;
@@ -1160,7 +930,6 @@ body.dark-mode .credit-text a:hover {
     box-shadow: 0 8px 20px rgba(0, 201, 167, 0.3);
 }
 
-/* Linha inferior (Direitos autorais) */
 .footer-bottom {
     max-width: 1200px;
     margin: 0 auto;
@@ -1172,34 +941,6 @@ body.dark-mode .credit-text a:hover {
     color: rgba(255, 255, 255, 0.4);
     font-size: 0.85rem;
     letter-spacing: 0.5px;
-}
-
-
-
-/* ===== RESPONSIVIDADE ===== */
-@media (max-width: 768px) {
-    .footer-container {
-        flex-direction: column;
-        gap: 2.5rem;
-        align-items: center;
-        text-align: center;
-    }
-    .footer-col {
-        min-width: 100%;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
-    .footer-col h3::after {
-        left: 50%;
-        transform: translateX(-50%);
-    }
-    .footer-col ul li a:hover {
-        transform: translateY(-2px);
-    }
-    .footer-social {
-        justify-content: center;
-    }
 }
 
 /* ===== SELETOR DE IDIOMA ===== */
@@ -1290,4 +1031,202 @@ body.dark-mode .credit-text a:hover {
 .language-toast.show {
     opacity: 1;
     transform: translateY(0);
+}
+
+/* ============================================
+   RESPONSIVIDADE
+   ============================================ */
+
+/* ---------- HEADER: telas médias (1200px) ---------- */
+@media (max-width: 1200px) {
+    .header {
+        height: 12rem;
+        padding: 0 4%;
+        gap: 1rem;
+    }
+    .nav-menu ul     { gap: 1.5rem; }
+    .nav-menu a      { font-size: 1rem; }
+    .btn-install     { margin-left: 0.5rem; padding: 0.6rem 1.2rem; font-size: 0.85rem; }
+    .language-toggle { margin-left: 0.5rem; width: 38px; height: 38px; }
+}
+
+/* ---------- SETAS: ajuste intermediário (1100px) ---------- */
+@media (max-width: 1100px) {
+    .arrow-left  { left: 0.5rem; }
+    .arrow-right { right: 0.5rem; }
+    .arrow       { width: 42px; height: 42px; }
+    .arrow svg   { width: 20px; height: 20px; }
+}
+
+/* ---------- TABLETS (900px) ---------- */
+@media (max-width: 900px) {
+    /* Header transformado em GRID para alinhar botões lado a lado */
+    .header {
+        height: auto;
+        display: grid;
+        grid-template-columns: auto auto;
+        justify-content: center;
+        align-items: center;
+        padding: 1.5rem 5% 3rem 5%; /* Aumentado o padding inferior para desencostar do conteúdo */
+        gap: 1.5rem 1rem; 
+    }
+
+    /* Elementos que ocupam a linha inteira */
+    .brand,
+    .nav-menu,
+    .btn-install {
+        grid-column: 1 / -1;
+    }
+
+    .brand {
+        justify-content: center;
+    }
+
+    .nav-menu ul {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 1rem;
+    }
+
+    .btn-install {
+        width: 100%;
+        max-width: 320px;
+        justify-content: center;
+        margin: 0 auto;
+    }
+
+    /* Modo escuro e idioma dividem a linha (lado a lado) */
+    .dark-mode-toggle {
+        grid-column: 1 / 2;
+        justify-self: end;
+        margin: 0;
+    }
+
+    .language-selector {
+        grid-column: 2 / 3;
+        justify-self: start;
+        margin: 0;
+    }
+
+    .language-toggle {
+        margin: 0;
+    }
+
+    /* Carrossel - Remove a margem negativa e adiciona respiro no topo */
+    .main-content {
+        margin: 2rem 0 3rem 0; 
+        padding: 0 4%;
+    }
+    .cards-slider {
+        height: auto;
+        min-height: 30rem;
+    }
+    .card {
+        flex-direction: column;
+        height: auto;
+        min-height: 30rem;
+    }
+    .card-text {
+        width: 100%;
+        padding: 2rem 1.5rem;
+        align-items: center;
+        text-align: center;
+    }
+    .card p          { max-width: 100%; }
+    .card-image      { width: 100%; height: 220px; border-radius: 0 0 24px 24px; }
+    .btn-group       { justify-content: center; }
+    .slider-indicators { bottom: -30px; }
+
+    /* Setas escondidas em mobile */
+    .arrow { display: none; }
+
+    /* Regiões */
+    .regions-section   { padding: 3rem 5% 4rem 5%; }
+    .regions-container { gap: 2rem; }
+    .regions-images    { aspect-ratio: 16 / 9; }
+
+    /* Visão */
+    .vision-section    { padding: 3rem 5% 4rem 5%; }
+    .vision-container {
+        flex-direction: column-reverse;
+        gap: 2.5rem;
+    }
+    .vision-text {
+        max-width: 100%;
+        text-align: center;
+    }
+    .vision-text .vision-highlight {
+        border-left: none;
+        padding: 1rem;
+        text-align: center;
+    }
+    .vision-image { max-width: 100%; }
+
+    /* Blog */
+    .blog-section { padding: 3rem 5% 4rem 5%; }
+    .btn-blog     { padding: 0.9rem 2.5rem; font-size: 1rem; }
+
+    /* Footer */
+    .footer { padding: 3rem 5% 1.5rem 5%; }
+    .footer-container {
+        flex-direction: column;
+        gap: 2.5rem;
+        align-items: center;
+        text-align: center;
+    }
+    .footer-col {
+        min-width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    .footer-col h3::after {
+        left: 50%;
+        transform: translateX(-50%);
+    }
+    .footer-col ul li a:hover { transform: translateY(-2px); }
+    .footer-social { justify-content: center; }
+}
+
+/* ---------- TELAS MUITO PEQUENAS (480px) ---------- */
+@media (max-width: 480px) {
+    /* Header */
+    .brand img  { width: 40px; height: 40px; }
+    .brand-name { font-size: 22px; }
+    .header     { padding: 1.2rem 4% 2.5rem 4%; gap: 1rem; }
+    .nav-menu a { font-size: 0.95rem; }
+
+    /* Carrossel */
+    .main-content { margin: 1.5rem 0 2.5rem 0; }
+    .card h1      { font-size: 1.35rem; }
+    .card-text    { padding: 1.5rem 1rem; }
+    .card-image   { height: 180px; }
+    .cards-slider { min-height: 32rem; }
+    .card         { min-height: 32rem; }
+    .btn          { padding: 0.6rem 1.2rem; font-size: 0.85rem; }
+
+    /* Botões */
+    .btn-install span,
+    .btn-blog span,
+    .btn-regions span { font-size: 0.9rem; }
+    .btn-regions      { padding: 0.8rem 1.8rem; }
+    .btn-blog         { padding: 0.8rem 2rem; font-size: 0.95rem; }
+
+    /* Regiões */
+    .regions-section  { padding: 2.5rem 4% 3rem 4%; }
+    .regions-text p   { font-size: 0.95rem; }
+    .regions-text h2  { font-size: 1.5rem; }
+    .highlight-city   { min-width: auto; }
+
+    /* Visão */
+    .vision-section { padding: 2.5rem 4% 3rem 4%; }
+
+    /* Blog */
+    .blog-section { padding: 2.5rem 4% 3rem 4%; }
+
+    /* Footer */
+    .footer { padding: 2.5rem 4% 1.5rem 4%; }
+
+    /* Seletor de idioma */
+    .language-menu { right: -10px; min-width: 130px; }
 }
