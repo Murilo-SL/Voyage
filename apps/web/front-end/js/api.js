@@ -2,6 +2,29 @@
 // API.JS - Funções compartilhadas do Voyage
 // =============================================
 
+const webImagesDirectory = new URL('../img/', document.currentScript.src);
+const defaultNewsImage = new URL('noticia_1.png', webImagesDirectory).href;
+
+function resolverImagemWeb(imagePath) {
+    const path = typeof imagePath === 'string' ? imagePath.trim() : '';
+
+    if (!path) return defaultNewsImage;
+    if (/^(https?:|\/\/|data:image\/|blob:)/i.test(path)) return path;
+
+    const normalizedPath = path.replace(/\\/g, '/');
+    const localImageMatch = normalizedPath.match(/(?:^|\/)(?:front-end\/)?img\/(.+)$/i);
+
+    if (localImageMatch) {
+        return new URL(localImageMatch[1], webImagesDirectory).href;
+    }
+
+    if (!normalizedPath.includes('/')) {
+        return new URL(normalizedPath, webImagesDirectory).href;
+    }
+
+    return new URL(normalizedPath, document.baseURI).href;
+}
+
 async function buscarNoticias() {
     const { data, error } = await supabase
         .from('news')

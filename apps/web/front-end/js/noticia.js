@@ -65,13 +65,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 
                 <h1 class="noticia-titulo">${data.titulo}</h1>
 
-                ${data.imagem_url ? `
-                    <img 
-                        src="${data.imagem_url}" 
+                <img
                         alt="${data.titulo}" 
                         class="noticia-imagem-principal"
-                    >
-                ` : ''}
+                >
 
                 <div class="noticia-corpo">
                     <p>${data.conteudo}</p>
@@ -82,6 +79,13 @@ document.addEventListener('DOMContentLoaded', async () => {
                 </a>
             </div>
         `;
+
+        const image = container.querySelector('.noticia-imagem-principal');
+        image.addEventListener('error', () => {
+            image.onerror = null;
+            image.src = defaultNewsImage;
+        }, { once: true });
+        image.src = resolverImagemWeb(data.imagem_url);
 
     } catch (err) {
         console.error('Erro ao carregar notícia:', err);
