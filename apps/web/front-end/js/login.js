@@ -158,21 +158,14 @@ if (els.loginForm) {
         mostrarToast('Verificando credenciais...', 'info');
 
         try {
-            const { data, error } = await supabase
-                .from('admins')
-                .select('*')
-                .eq('email', email)
-                .single();
+            const senhaHash = await hashSenha(senha);
 
-            if (error || !data) {
-                setLoading(btn, false);
-                mostrarToast('E-mail ou senha incorretos.', 'error');
-                return;
-            }
+            const { data, error } = await supabase.rpc('verificar_login_admin', {
+                p_email: email,
+                p_senha_hash: senhaHash
+            });
 
-            const senhaCorreta = await compararSenha(senha, data.senha_hash);
-
-            if (!senhaCorreta) {
+            if (error || !data || data.ok !== true) {
                 setLoading(btn, false);
                 mostrarToast('E-mail ou senha incorretos.', 'error');
                 return;
