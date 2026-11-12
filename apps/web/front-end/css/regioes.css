@@ -274,3 +274,30 @@ body {
         gap: 0.8rem;
     }
 }
+
+/* Foto pequena da cidade */
+.cidade-foto {
+    width: 56px;
+    height: 56px;
+    border-radius: 14px;
+    object-fit: cover;
+    flex-shrink: 0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    border: 2px solid #fff;
+    background: #e2e8f0;
+}
+
+/* Se não tiver foto, mantém o ícone redondo */
+.cidade-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #00C9A7, #0F2C59);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    font-size: 1.4rem;
+    flex-shrink: 0;
+    box-shadow: 0 4px 12px rgba(0, 201, 167, 0.3);
+}

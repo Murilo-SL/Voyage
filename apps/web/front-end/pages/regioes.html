@@ -249,7 +249,7 @@
     <script src="../js/idioma.js"></script>
     <script src="../js/api.js"></script>
 
-    <script>
+<script>
     async function carregarRegioes() {
         const lista = document.getElementById('cidadesList');
         const regioes = await buscarRegioes();
@@ -259,21 +259,41 @@
             return;
         }
 
-        lista.innerHTML = regioes.map(r => `
-            <div class="cidade-item" data-name="${r.nome.toLowerCase()}">
-                <div class="cidade-info">
-                    <div class="cidade-icon">
-                        <i class="bi bi-geo-alt-fill"></i>
-                    </div>
-                    <div>
-                        <h3>${r.nome}</h3>
-                        <p class="cidade-status">
-                            <span class="status-dot"></span> Em operação
-                        </p>
+        lista.innerHTML = regioes.map(r => {
+            const foto = r.imagem_url
+                ? `<img src="${r.imagem_url}" alt="${r.nome}" class="cidade-foto">`
+                : `<div class="cidade-icon"><i class="bi bi-geo-alt-fill"></i></div>`;
+
+            return `
+                <div class="cidade-item" data-name="${r.nome.toLowerCase()}">
+                    <div class="cidade-info">
+                        ${foto}
+                        <div>
+                            <h3>${r.nome}</h3>
+                            <p class="cidade-status">
+                                <span class="status-dot"></span> Em operação
+                            </p>
+                        </div>
                     </div>
                 </div>
-            </div>
-        `).join('');
+            `;
+        }).join('');
+
+        // Reativa a busca depois de carregar
+        iniciarBuscaCidades();
+    }
+
+    function iniciarBuscaCidades() {
+        const searchInput = document.getElementById('searchInput');
+        if (!searchInput) return;
+
+        searchInput.oninput = function () {
+            const term = this.value.toLowerCase();
+            document.querySelectorAll('.cidade-item').forEach(item => {
+                const name = (item.getAttribute('data-name') || '').toLowerCase();
+                item.classList.toggle('hidden', term && !name.includes(term));
+            });
+        };
     }
 
     document.addEventListener('DOMContentLoaded', carregarRegioes);

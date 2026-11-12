@@ -18,6 +18,54 @@ function getAdminEmail() {
 }
 
 // =============================================
+// Recarregar a pagina em cas de sucesso
+// =============================================
+
+function mostrarSucessoERecarregar(mensagem) {
+    // Remove aviso antigo, se existir
+    const antigo = document.getElementById('aviso-sucesso-admin');
+    if (antigo) antigo.remove();
+
+    let segundos = 5;
+
+    const box = document.createElement('div');
+    box.id = 'aviso-sucesso-admin';
+    box.innerHTML = `
+        <div style="
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            z-index: 9999;
+            background: #166534;
+            color: #fff;
+            padding: 16px 20px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+            min-width: 280px;
+            font-family: system-ui, sans-serif;
+        ">
+            <div style="font-weight: 700; margin-bottom: 6px;">✅ ${mensagem}</div>
+            <div style="font-size: 0.9rem; opacity: 0.95;">
+                A página será atualizada em <strong id="contador-reload">${segundos}</strong>s...
+            </div>
+        </div>
+    `;
+    document.body.appendChild(box);
+
+    const timer = setInterval(() => {
+        segundos -= 1;
+        const el = document.getElementById('contador-reload');
+        if (el) el.textContent = segundos;
+
+        if (segundos <= 0) {
+            clearInterval(timer);
+            window.location.reload();
+        }
+    }, 1000);
+}
+
+
+// =============================================
 // NAVEGAÇÃO ENTRE SEÇÕES
 // =============================================
 function mostrarSecao(secao) {
@@ -90,10 +138,16 @@ async function carregarNoticias() {
                     </span>
                 </td>
                 <td>${formatarData(item.created_at)}</td>
-                <td class="actions">
-                    <button class="btn-icon btn-delete" onclick="deletarItem('news', '${item.id}')" title="Excluir">
-                        <i class="bi bi-trash"></i>
-                    </button>
+<td class="actions">
+    <button class="btn-icon btn-edit" title="Editar"
+        onclick='abrirModal("noticia", ${JSON.stringify(item)})'>
+        <i class="bi bi-pencil"></i>
+    </button>
+    <button class="btn-icon btn-delete" title="Excluir"
+        onclick="deletarItem('news', '${item.id}')">
+        <i class="bi bi-trash"></i>
+    </button>
+</td>
                 </td>
             </tr>
         `).join('');
@@ -138,11 +192,16 @@ async function carregarParceiros() {
                         ${item.ativo ? 'Ativo' : 'Inativo'}
                     </span>
                 </td>
-                <td class="actions">
-                    <button class="btn-icon btn-delete" onclick="deletarItem('partners', '${item.id}')" title="Excluir">
-                        <i class="bi bi-trash"></i>
-                    </button>
-                </td>
+<td class="actions">
+    <button class="btn-icon btn-edit" title="Editar"
+        onclick='abrirModal("parceiro", ${JSON.stringify(item)})'>
+        <i class="bi bi-pencil"></i>
+    </button>
+    <button class="btn-icon btn-delete" title="Excluir"
+        onclick="deletarItem('partners', '${item.id}')">
+        <i class="bi bi-trash"></i>
+    </button>
+</td>
             </tr>
         `).join('');
     } catch (err) {
@@ -182,7 +241,12 @@ async function carregarRegioes() {
                 <td>${item.nome}</td>
                 <td>${item.descricao || '-'}</td>
                 <td class="actions">
-                    <button class="btn-icon btn-delete" onclick="deletarItem('regions', '${item.id}')" title="Excluir">
+                    <button class="btn-icon btn-edit" title="Editar"
+                        onclick='abrirModal("regiao", ${JSON.stringify(item)})'>
+                        <i class="bi bi-pencil"></i>
+                    </button>
+                    <button class="btn-icon btn-delete" title="Excluir"
+                        onclick="deletarItem('regions', '${item.id}')">
                         <i class="bi bi-trash"></i>
                     </button>
                 </td>
@@ -220,9 +284,12 @@ async function deletarItem(tabela, id) {
             return;
         }
 
-        if (tabela === 'news') carregarNoticias();
-        if (tabela === 'partners') carregarParceiros();
-        if (tabela === 'regions') carregarRegioes();
+        let msg = 'Item excluído com sucesso!';
+        if (tabela === 'news') msg = 'Notícia excluída com sucesso!';
+        if (tabela === 'partners') msg = 'Parceiro excluído com sucesso!';
+        if (tabela === 'regions') msg = 'Região excluída com sucesso!';
+
+        mostrarSucessoERecarregar(msg);
         carregarDashboard();
     } catch (err) {
         console.error(err);
@@ -234,9 +301,12 @@ async function deletarItem(tabela, id) {
 // MODAL
 // =============================================
 let tipoAtual = null;
+let idEditando = null;
 
-function abrirModal(tipo) {
+function abrirModal(tipo, item = null) {
     tipoAtual = tipo;
+    idEditando = item ? item.id : null;
+
     const modal = document.getElementById('modal');
     const titulo = document.getElementById('modal-titulo');
     const campos = document.getElementById('campos-modal');
@@ -244,69 +314,84 @@ function abrirModal(tipo) {
     let html = '';
 
     if (tipo === 'noticia') {
-        titulo.textContent = 'Nova Notícia';
+        titulo.textContent = item ? 'Editar Notícia' : 'Nova Notícia';
         html = `
             <div class="form-group">
                 <label>Título</label>
-                <input type="text" name="titulo" required>
+                <input type="text" name="titulo" required value="${item ? escapeHtml(item.titulo || '') : ''}">
             </div>
             <div class="form-group">
                 <label>Conteúdo</label>
-                <textarea name="conteudo" required></textarea>
+                <textarea name="conteudo" required>${item ? escapeHtml(item.conteudo || '') : ''}</textarea>
             </div>
             <div class="form-group">
                 <label>Autor</label>
-                <input type="text" name="autor">
+                <input type="text" name="autor" value="${item ? escapeHtml(item.autor || '') : ''}">
             </div>
             <div class="form-group">
                 <label>URL da Imagem</label>
-                <input type="text" name="imagem_url">
+                <input type="text" name="imagem_url" value="${item ? escapeHtml(item.imagem_url || '') : ''}">
             </div>
         `;
     }
 
     if (tipo === 'parceiro') {
-        titulo.textContent = 'Novo Parceiro';
+        titulo.textContent = item ? 'Editar Parceiro' : 'Novo Parceiro';
         html = `
             <div class="form-group">
                 <label>Nome</label>
-                <input type="text" name="nome" required>
+                <input type="text" name="nome" required value="${item ? escapeHtml(item.nome || '') : ''}">
             </div>
             <div class="form-group">
                 <label>Descrição</label>
-                <textarea name="descricao"></textarea>
+                <textarea name="descricao">${item ? escapeHtml(item.descricao || '') : ''}</textarea>
             </div>
             <div class="form-group">
                 <label>URL do Logo</label>
-                <input type="text" name="logo_url">
+                <input type="text" name="logo_url" value="${item ? escapeHtml(item.logo_url || '') : ''}">
             </div>
             <div class="form-group">
                 <label>Site</label>
-                <input type="text" name="site_url">
+                <input type="text" name="site_url" value="${item ? escapeHtml(item.site_url || '') : ''}">
             </div>
         `;
     }
 
     if (tipo === 'regiao') {
-        titulo.textContent = 'Nova Região';
+        titulo.textContent = item ? 'Editar Região' : 'Nova Região';
         html = `
             <div class="form-group">
                 <label>Nome</label>
-                <input type="text" name="nome" required>
+                <input type="text" name="nome" required value="${item ? escapeHtml(item.nome || '') : ''}">
             </div>
             <div class="form-group">
                 <label>Descrição</label>
-                <textarea name="descricao"></textarea>
+                <textarea name="descricao">${item ? escapeHtml(item.descricao || '') : ''}</textarea>
             </div>
             <div class="form-group">
                 <label>URL da Imagem</label>
-                <input type="text" name="imagem_url">
+                <input type="text" name="imagem_url" value="${item ? escapeHtml(item.imagem_url || '') : ''}">
             </div>
         `;
     }
 
     campos.innerHTML = html;
     modal.classList.add('active');
+}
+
+function escapeHtml(texto) {
+    return String(texto)
+        .replace(/&/g, '&amp;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+}
+
+function fecharModal() {
+    document.getElementById('modal').classList.remove('active');
+    tipoAtual = null;
+    idEditando = null;
 }
 
 function fecharModal() {
@@ -333,33 +418,66 @@ document.getElementById('form-modal').addEventListener('submit', async (e) => {
     try {
         let result;
 
-        if (tipoAtual === 'noticia') {
-            result = await supabase.rpc('admin_inserir_noticia', {
-                p_email: email,
-                p_titulo: dados.titulo,
-                p_conteudo: dados.conteudo,
-                p_autor: dados.autor || null,
-                p_imagem_url: dados.imagem_url || null
-            });
+        // ===== EDITAR =====
+        if (idEditando) {
+            if (tipoAtual === 'noticia') {
+                result = await supabase.rpc('admin_atualizar_noticia', {
+                    p_email: email,
+                    p_id: idEditando,
+                    p_titulo: dados.titulo,
+                    p_conteudo: dados.conteudo,
+                    p_autor: dados.autor || null,
+                    p_imagem_url: dados.imagem_url || null
+                });
+            }
+            if (tipoAtual === 'parceiro') {
+                result = await supabase.rpc('admin_atualizar_parceiro', {
+                    p_email: email,
+                    p_id: idEditando,
+                    p_nome: dados.nome,
+                    p_descricao: dados.descricao || null,
+                    p_logo_url: dados.logo_url || null,
+                    p_site_url: dados.site_url || null
+                });
+            }
+            if (tipoAtual === 'regiao') {
+                result = await supabase.rpc('admin_atualizar_regiao', {
+                    p_email: email,
+                    p_id: idEditando,
+                    p_nome: dados.nome,
+                    p_descricao: dados.descricao || null,
+                    p_imagem_url: dados.imagem_url || null
+                });
+            }
         }
-
-        if (tipoAtual === 'parceiro') {
-            result = await supabase.rpc('admin_inserir_parceiro', {
-                p_email: email,
-                p_nome: dados.nome,
-                p_descricao: dados.descricao || null,
-                p_logo_url: dados.logo_url || null,
-                p_site_url: dados.site_url || null
-            });
-        }
-
-        if (tipoAtual === 'regiao') {
-            result = await supabase.rpc('admin_inserir_regiao', {
-                p_email: email,
-                p_nome: dados.nome,
-                p_descricao: dados.descricao || null,
-                p_imagem_url: dados.imagem_url || null
-            });
+        // ===== CRIAR =====
+        else {
+            if (tipoAtual === 'noticia') {
+                result = await supabase.rpc('admin_inserir_noticia', {
+                    p_email: email,
+                    p_titulo: dados.titulo,
+                    p_conteudo: dados.conteudo,
+                    p_autor: dados.autor || null,
+                    p_imagem_url: dados.imagem_url || null
+                });
+            }
+            if (tipoAtual === 'parceiro') {
+                result = await supabase.rpc('admin_inserir_parceiro', {
+                    p_email: email,
+                    p_nome: dados.nome,
+                    p_descricao: dados.descricao || null,
+                    p_logo_url: dados.logo_url || null,
+                    p_site_url: dados.site_url || null
+                });
+            }
+            if (tipoAtual === 'regiao') {
+                result = await supabase.rpc('admin_inserir_regiao', {
+                    p_email: email,
+                    p_nome: dados.nome,
+                    p_descricao: dados.descricao || null,
+                    p_imagem_url: dados.imagem_url || null
+                });
+            }
         }
 
         const { data, error } = result || {};
@@ -374,10 +492,18 @@ document.getElementById('form-modal').addEventListener('submit', async (e) => {
 
         fecharModal();
 
-        if (tipoAtual === 'noticia') carregarNoticias();
-        if (tipoAtual === 'parceiro') carregarParceiros();
-        if (tipoAtual === 'regiao') carregarRegioes();
-        carregarDashboard();
+        let msg = idEditando ? 'Item atualizado com sucesso!' : 'Item salvo com sucesso!';
+        if (tipoAtual === 'noticia') {
+            msg = idEditando ? 'Notícia atualizada com sucesso!' : 'Notícia adicionada com sucesso!';
+        }
+        if (tipoAtual === 'parceiro') {
+            msg = idEditando ? 'Parceiro atualizado com sucesso!' : 'Parceiro adicionado com sucesso!';
+        }
+        if (tipoAtual === 'regiao') {
+            msg = idEditando ? 'Região atualizada com sucesso!' : 'Região adicionada com sucesso!';
+        }
+
+        mostrarSucessoERecarregar(msg);
 
     } catch (err) {
         console.error(err);
