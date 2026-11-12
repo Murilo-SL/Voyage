@@ -8,6 +8,15 @@ if (!adminLogado) {
     window.location.href = './login.html';
 }
 
+function getAdminEmail() {
+    try {
+        const admin = JSON.parse(localStorage.getItem('voyage_admin') || '{}');
+        return admin.email || '';
+    } catch {
+        return '';
+    }
+}
+
 // =============================================
 // NAVEGAÇÃO ENTRE SEÇÕES
 // =============================================
@@ -191,15 +200,26 @@ async function carregarRegioes() {
 async function deletarItem(tabela, id) {
     if (!confirm('Tem certeza que deseja excluir este item?')) return;
 
+    const email = getAdminEmail();
+    if (!email) {
+        alert('Sessão expirada. Faça login novamente.');
+        window.location.href = './login.html';
+        return;
+    }
+
     try {
-        const { error } = await supabase
-            .from(tabela)
-            .delete()
-            .eq('id', id);
+        const { data, error } = await supabase.rpc('admin_deletar_item', {
+            p_email: email,
+            p_tabela: tabela,
+            p_id: id
+        });
 
         if (error) throw error;
+        if (!data || data.ok !== true) {
+            alert('Não foi possível excluir.');
+            return;
+        }
 
-        // Recarrega a seção atual
         if (tabela === 'news') carregarNoticias();
         if (tabela === 'partners') carregarParceiros();
         if (tabela === 'regions') carregarRegioes();
@@ -302,49 +322,58 @@ document.getElementById('form-modal').addEventListener('submit', async (e) => {
 
     const formData = new FormData(e.target);
     const dados = Object.fromEntries(formData.entries());
+    const email = getAdminEmail();
+
+    if (!email) {
+        alert('Sessão expirada. Faça login novamente.');
+        window.location.href = './login.html';
+        return;
+    }
 
     try {
-        let tabela = '';
-        let payload = {};
+        let result;
 
         if (tipoAtual === 'noticia') {
-            tabela = 'news';
-            payload = {
-                titulo: dados.titulo,
-                conteudo: dados.conteudo,
-                autor: dados.autor || null,
-                imagem_url: dados.imagem_url || null,
-                publicada: true
-            };
+            result = await supabase.rpc('admin_inserir_noticia', {
+                p_email: email,
+                p_titulo: dados.titulo,
+                p_conteudo: dados.conteudo,
+                p_autor: dados.autor || null,
+                p_imagem_url: dados.imagem_url || null
+            });
         }
 
         if (tipoAtual === 'parceiro') {
-            tabela = 'partners';
-            payload = {
-                nome: dados.nome,
-                descricao: dados.descricao || null,
-                logo_url: dados.logo_url || null,
-                site_url: dados.site_url || null,
-                ativo: true
-            };
+            result = await supabase.rpc('admin_inserir_parceiro', {
+                p_email: email,
+                p_nome: dados.nome,
+                p_descricao: dados.descricao || null,
+                p_logo_url: dados.logo_url || null,
+                p_site_url: dados.site_url || null
+            });
         }
 
         if (tipoAtual === 'regiao') {
-            tabela = 'regions';
-            payload = {
-                nome: dados.nome,
-                descricao: dados.descricao || null,
-                imagem_url: dados.imagem_url || null
-            };
+            result = await supabase.rpc('admin_inserir_regiao', {
+                p_email: email,
+                p_nome: dados.nome,
+                p_descricao: dados.descricao || null,
+                p_imagem_url: dados.imagem_url || null
+            });
         }
 
-        const { error } = await supabase.from(tabela).insert([payload]);
+        const { data, error } = result || {};
 
         if (error) throw error;
+        if (!data || data.ok !== true) {
+            alert(data && data.erro === 'nao_autorizado'
+                ? 'Você não tem permissão.'
+                : 'Erro ao salvar.');
+            return;
+        }
 
         fecharModal();
 
-        // Recarrega a lista
         if (tipoAtual === 'noticia') carregarNoticias();
         if (tipoAtual === 'parceiro') carregarParceiros();
         if (tipoAtual === 'regiao') carregarRegioes();

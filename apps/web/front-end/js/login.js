@@ -158,21 +158,14 @@ if (els.loginForm) {
         mostrarToast('Verificando credenciais...', 'info');
 
         try {
-            const { data, error } = await supabase
-                .from('admins')
-                .select('*')
-                .eq('email', email)
-                .single();
+            const senhaHash = await hashSenha(senha);
 
-            if (error || !data) {
-                setLoading(btn, false);
-                mostrarToast('E-mail ou senha incorretos.', 'error');
-                return;
-            }
+            const { data, error } = await supabase.rpc('verificar_login_admin', {
+                p_email: email,
+                p_senha_hash: senhaHash
+            });
 
-            const senhaCorreta = await compararSenha(senha, data.senha_hash);
-
-            if (!senhaCorreta) {
+            if (error || !data || data.ok !== true) {
                 setLoading(btn, false);
                 mostrarToast('E-mail ou senha incorretos.', 'error');
                 return;
@@ -238,33 +231,31 @@ if (els.registerForm) {
         mostrarToast('Criando sua conta ADM...', 'info');
 
         try {
-            const { data: existe } = await supabase
-                .from('admins')
-                .select('id')
-                .eq('email', email)
-                .maybeSingle();
-
-            if (existe) {
-                setLoading(btn, false);
-                mostrarToast('Este e-mail já está cadastrado.', 'error');
-                return;
-            }
-
             const senhaHash = await hashSenha(senha);
 
-            const { error } = await supabase
-                .from('admins')
-                .insert([{
-                    nome: nome,
-                    email: email,
-                    senha_hash: senhaHash
-                }]);
+            const { data, error } = await supabase.rpc('cadastrar_admin', {
+                p_nome: nome,
+                p_email: email,
+                p_senha_hash: senhaHash,
+                p_codigo: codigo
+            });
 
             setLoading(btn, false);
 
             if (error) {
                 console.error(error);
                 mostrarToast('Erro ao criar conta. Tente novamente.', 'error');
+                return;
+            }
+
+            if (!data || data.ok !== true) {
+                if (data && data.erro === 'email_existe') {
+                    mostrarToast('Este e-mail já está cadastrado.', 'error');
+                } else if (data && data.erro === 'codigo_invalido') {
+                    mostrarToast('Código ADM inválido.', 'error');
+                } else {
+                    mostrarToast('Não foi possível criar a conta.', 'error');
+                }
                 return;
             }
 
